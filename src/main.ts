@@ -3,23 +3,23 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  console.log("🚀 Starting NestJS app...");
+  console.log("PORT:", process.env.PORT);
+  console.log("MONGO_URI:", process.env.MONGO_URI ? "SET ✅" : "MISSING ❌");
+
   const app = await NestFactory.create(AppModule);
-  const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? '')
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean);
+
+  // 🔥 Read allowed origins from env
+  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
+
+  console.log("🌐 Allowed Origins:", allowedOrigins);
 
   app.enableCors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
-        callback(null, true);
-        return;
-      }
-
-      callback(new Error(`Origin ${origin} is not allowed by CORS`), false);
-    },
+    origin: allowedOrigins,
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -27,6 +27,12 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  await app.listen(process.env.PORT ?? 3000);
+
+  const port = process.env.PORT || 3000;
+
+  await app.listen(port);
+
+  console.log(`✅ App is running on port ${port}`);
 }
+
 bootstrap();
