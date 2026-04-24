@@ -4,11 +4,14 @@
   "description": "",
   "author": "",
   "private": true,
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "node dist/main",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
